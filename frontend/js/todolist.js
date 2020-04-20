@@ -32,7 +32,7 @@
     function deleteElement(index) {
       $.ajax({
         type: "DELETE",
-        url: "http://localhost:3001/api/deleteTodo",
+        url: "http://localhost:3001/api/delete",
         async: false,  //同步传输
         data: {index: index}, //返回删除task的序号
         dataType: "json",	

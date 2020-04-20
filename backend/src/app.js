@@ -3,7 +3,8 @@ const bodyParser = require('body-parser')  //解析前端传输的数据
 const {
   getAllTodo,
   deleteTodo,
-  addTodo
+  addTodo,
+  updateTodo
 } = require('./controller')
 
 const app = express()
@@ -24,9 +25,13 @@ app.post("/api/add", addTodo)
 
 app.get("/api/getAll", getAllTodo)
 
-app.delete("/api/deleteTodo", deleteTodo) 
+app.delete("/api/delete", deleteTodo) 
 
-app.delete("/api/deleteTodo/:id", deleteTodo) 
+app.delete("/api/delete/:id", deleteTodo) 
+
+app.post("/api/update", updateTodo)
+
+app.post("/api/update/:id", updateTodo)
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
 
