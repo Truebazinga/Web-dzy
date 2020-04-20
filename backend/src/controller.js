@@ -57,7 +57,7 @@ exports.deleteTodo = async (req, res) => {
     res.status(404).send()
   } else {
     await asyncWriteFile(JSON.stringify(newTodo), req.app.locals.dataFilePath)
-    res.send(204).send()
+    res.send(204).send(todo_list)
   }
 }
 
@@ -69,7 +69,6 @@ exports.updateTodo = async (req, res) => {
   console.log(req.body)
   const file = await asyncReadFile(req.app.locals.dataFilePath)
   const todo_list = JSON.parse(file)
-  const change = JSON.parse(await asyncReadFile("./change.json"))
   if(index){
     todo_list[index].task = task
   }else if(id){
@@ -85,6 +84,6 @@ exports.updateTodo = async (req, res) => {
     res.status(404).send()
   }else {
     await asyncWriteFile(JSON.stringify(todo_list), req.app.locals.dataFilePath)
-    res.send(204).send()
+    res.send(204).send(todo_list)
   }
 }
