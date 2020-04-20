@@ -43,6 +43,19 @@
       if (inputValue === '') {
         alert("请先输入一个具体任务。");
       } else {
+        // $.ajax({
+        //     type: "POST",
+        //     url: "http://localhost:3002/api/add",
+        //     async: false,  //同步传输
+        //     data: {task: inputValue}, /*传给后端的数据*/
+        //     dataType: "json",	/*后端返回的数据格式json*/
+        //     success: function(res){
+        //       // console.log(res)
+        //       // inputValue = data.data.message
+        //     },
+        //     error: function (res) {
+        //     }
+        // });
         document.getElementById("myUL").appendChild(li);
       }
       document.getElementById("myInput").value = ""; /*清空输入*/
@@ -85,10 +98,6 @@
           initList();
         }
       }
-
-
-
-      
     }
 
     init();
