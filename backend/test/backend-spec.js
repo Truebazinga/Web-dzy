@@ -37,7 +37,7 @@ const {
         }).expect(201).expect([
           {"id":0,"task":"睡觉"},
         {"id":1,"task":"睡觉"},
-        {"id":2,"task":"sleep"}
+        {"id":2,"task":"tdd"}
         ]).end((err, res) => {
           if (err) throw err;
           done()
