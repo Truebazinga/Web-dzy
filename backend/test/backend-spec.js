@@ -9,88 +9,35 @@ const {
   
   describe("app", () => {
     describe("get request", () => {
-      it("should get all tasks when request url pattern is '/api/tasks'", (done) => {
+      it("should get all tasks when request url pattern is '/api/getAll'", (done) => {
         app.locals.dataFilePath = "./test/fixture.json"
-        request(app).get('/api/tasks').expect(200).expect([
-          {
-          "id":1,
-          "content":"Restful API homework",
-          "createdTime":"2019-05-15T00:00:00Z"
-          },
-          {
-          "id":2,
-          "content":"make dinner",
-          "createdTime":"2020-03-20T20:19:00Z"
-          },
-          {
-          "id":3,
-          "content":"make lunch",
-          "createdTime":"2020-03-20T21:00:00Z"
-          }
+        request(app).get('/api/getAll').expect(200).expect([
+          {"id":0,"task":"睡觉"},
+          {"id":1,"task":"睡觉"}
       ]).end((err, res) => {
           if (err) throw err;
           done()
         })
       })
   
-      it("should get specific account when request url patten is '/accounts/:email'", (done) => {
-        request(app).get('/api/tasks/1').expect(200).expect({
-          "id": 1,
-          "content": "Restful API homework",
-          "createdTime": "2019-05-15T00:00:00Z"
-          }).end((err, res) => {
-          if (err) throw err;
-          done()
-        })
-      })
+
     })
   
     describe("post request", () => {
       afterEach(async function () {
         await asyncWriteFile(JSON.stringify([
-          {
-          "id":1,
-          "content":"Restful API homework",
-          "createdTime":"2019-05-15T00:00:00Z"
-          },
-          {
-          "id":2,
-          "content":"make dinner",
-          "createdTime":"2020-03-20T20:19:00Z"
-          },
-          {
-          "id":3,
-          "content":"make lunch",
-          "createdTime":"2020-03-20T21:00:00Z"
-          }
+          {"id":0,"task":"睡觉"},
+          {"id":1,"task":"睡觉"}
       ]), "./test/fixture.json")
       })
   
-      it("should create a account when the corresponding email does not exist in the datasource", (done) => {
-        request(app).post('/api/tasks').send({
-          "id":4,
-          "content":"make lunch",
-          "createdTime":"2020-03-21T21:00:00Z"
-        }).expect(201).expect([{
-          "id":1,
-          "content":"Restful API homework",
-          "createdTime":"2019-05-15T00:00:00Z"
-          },
-          {
-          "id":2,
-          "content":"make dinner",
-          "createdTime":"2020-03-20T20:19:00Z"
-          },
-          {
-          "id":3,
-          "content":"make lunch",
-          "createdTime":"2020-03-20T21:00:00Z"
-          },
-          {
-          "id":4,
-          "content":"make lunch",
-          "createdTime":"2020-03-21T21:00:00Z"
-          }
+      it("should create a task ", (done) => {
+        request(app).post('/api/add').send({
+          "id":2,"task":"tdd"
+        }).expect(201).expect([
+          {"id":0,"task":"睡觉"},
+        {"id":1,"task":"睡觉"},
+        {"id":2,"task":"sleep"}
         ]).end((err, res) => {
           if (err) throw err;
           done()
@@ -102,30 +49,20 @@ const {
     describe("delete request", () => {
       afterEach(async function () {
         await asyncWriteFile(JSON.stringify([
-          {
-          "id":1,
-          "content":"Restful API homework",
-          "createdTime":"2019-05-15T00:00:00Z"
-          },
-          {
-          "id":2,
-          "content":"make dinner",
-          "createdTime":"2020-03-20T20:19:00Z"
-          },
-          {
-          "id":3,
-          "content":"make lunch",
-          "createdTime":"2020-03-20T21:00:00Z"
-          }
+          {"id":0,"task":"睡觉"},
+          {"id":1,"task":"睡觉"}
       ]), "./test/fixture.json")
     
     
       })
-      it("should delete a exist resource and return 204", (done) => {
-        request(app).delete('/api/tasks/1').expect(204).end((err, res) => {
+      it("should delete task and return 204", (done) => {
+        request(app).delete('/api/delete/0').expect(204).end((err, res) => {
           if (err) throw err;
           done()
         })
       })
+
+
+      
   })
-})
+}) 
