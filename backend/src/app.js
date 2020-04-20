@@ -8,7 +8,7 @@ const {
 
 const app = express()
 app.locals.dataFilePath = "./data.json"
-const port = 3002
+const port = 3001
 
 app.use(bodyParser.json())  
 app.use(bodyParser.urlencoded({ extended: false})) 
@@ -26,6 +26,9 @@ app.get("/api/getAll", getAllTodo)
 
 app.delete("/api/deleteTodo", deleteTodo) 
 
+app.delete("/api/deleteTodo/:id", deleteTodo) 
+
 app.listen(port, () => console.log(`App listening on port ${port}!`))
 
 exports.app = app
+

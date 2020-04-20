@@ -32,7 +32,7 @@
     function deleteElement(index) {
       $.ajax({
         type: "DELETE",
-        url: "http://localhost:3002/api/deleteTodo",
+        url: "http://localhost:3001/api/deleteTodo",
         async: false,  //同步传输
         data: {index: index}, //返回删除task的序号
         dataType: "json",	
@@ -64,7 +64,7 @@
       } else {
         $.ajax({
             type: "POST",
-            url: "http://localhost:3002/api/add",
+            url: "http://localhost:3001/api/add",
             async: false,  //同步传输
             data: {task: inputValue}, /*传给后端的数据*/
             dataType: "json",	/*后端返回的数据格式json*/
@@ -83,7 +83,7 @@
       var todoList = [];
       $.ajax({
         type: "GET",
-        url: "http://localhost:3002/api/getAll",
+        url: "http://localhost:3001/api/getAll",
         async: false,  //同步传输
         dataType: "json",	/*后端返回的数据格式json*/
         success: function(res){

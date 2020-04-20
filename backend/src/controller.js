@@ -31,12 +31,24 @@ exports.addTodo = async (req, res) => {
 //删除
 exports.deleteTodo = async (req, res) => {
   const index = req.body.index
+  const id = req.params.id
   const file = await asyncReadFile(req.app.locals.dataFilePath)
   const todo_list = JSON.parse(file)
   const newTodo = []
   var count = 0
+  if(id<todo_list.length){
+    for(var i=0; i<todo_list.length; i++){
+      if(todo_list[i].id != id && id){
+        newTodo.push({"id":count,"task":todo_list[i].task})
+        count++
+      }
+    }
+  }else if(id){
+    console.log('输入索引超出todoList长度')
+  }
+  count = 0
   for(var i=0; i<todo_list.length; i++){
-    if(todo_list[i].id != index){
+    if(todo_list[i].id != index && index){
       newTodo.push({"id":count,"task":todo_list[i].task})
       count++
     }
