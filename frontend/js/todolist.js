@@ -61,6 +61,30 @@
       document.getElementById("myInput").value = ""; /*清空输入*/
     }
 
+    //返回所有Todo任务
+    function getAllTask() {
+      var todoList = [];
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:3002/api/getAll",
+        async: false,  //同步传输
+        // data: {task: inputValue}, /*传给后端的数据*/
+        dataType: "json",	/*后端返回的数据格式json*/
+        success: function(res){
+          todoList = res;
+        },
+        error: function (res) {
+        }
+      });
+      for(var i=0; i<todoList.length; i++){
+        var li = document.createElement("li");
+        var t = document.createTextNode(todoList[i].task);
+        li.appendChild(t);
+        document.getElementById("myUL").appendChild(li);
+      }
+      document.getElementById("myInput").value = ""; /*清空输入*/
+    }
+
     /*初始化list*/
     function initList() {
       closeBtn();
@@ -83,7 +107,10 @@
         this.style.backgroundColor = "";
       }
       var addButton = document.getElementById("addButton");
-      initList();
+      getAllTask()
+      closeBtn();
+      closeElement();
+      ifChecked();
 
       /*添加按钮点击时执行*/
       addButton.onclick = function() {
