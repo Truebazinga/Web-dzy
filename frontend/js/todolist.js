@@ -82,7 +82,7 @@
     function getAllTask() {
       var todoList = [];
       $.ajax({
-        type: "POST",
+        type: "GET",
         url: "http://localhost:3002/api/getAll",
         async: false,  //同步传输
         dataType: "json",	/*后端返回的数据格式json*/

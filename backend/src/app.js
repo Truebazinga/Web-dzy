@@ -13,7 +13,6 @@ const port = 3002
 app.use(bodyParser.json())  
 app.use(bodyParser.urlencoded({ extended: false})) 
 app.use(express.json())
-app.get('/', (req, res) => res.send('<h1>Hi, Welcome!</h1>'))
 
 app.all('*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -23,7 +22,7 @@ app.all('*', function(req, res, next) {
 
 app.post("/api/add", addTodo)
 
-app.post("/api/getAll", getAllTodo)
+app.get("/api/getAll", getAllTodo)
 
 app.delete("/api/deleteTodo", deleteTodo) 
 
