@@ -18,6 +18,7 @@ exports.addTodo = async (req, res) => {
   const newTodo = req.body
   const file = await asyncReadFile(req.app.locals.dataFilePath)
   const todo_list = JSON.parse(file)
+  newTodo.id = todo_list.length;
   if (todo_list.filter(v => v.task === newTodo.task).length != 0) {
     res.status(400).send()
   } else {
@@ -29,10 +30,17 @@ exports.addTodo = async (req, res) => {
 
 //删除
 exports.deleteTodo = async (req, res) => {
-  const task = parseInt(req.body.task)
+  const index = req.body.index
   const file = await asyncReadFile(req.app.locals.dataFilePath)
   const todo_list = JSON.parse(file)
-  const newTodo = todo_list.filter(v => v.task !== task)
+  const newTodo = []
+  var count = 0
+  for(var i=0; i<todo_list.length; i++){
+    if(todo_list[i].id != index){
+      newTodo.push({"id":count,"task":todo_list[i].task})
+      count++
+    }
+  }
   if (newTodo.length === todo_list.length) {
     res.status(404).send()
   } else {

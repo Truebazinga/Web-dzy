@@ -11,7 +11,7 @@ group 7
 ## 代码结构
     Web-dzy
        |
-       |-- backend  // 使用SpringBoot构建RESTful API
+       |-- backend  // 使用express构建RESTful API
        |
        |-- frontend  // 使用ReactJs构建前端组件
        |

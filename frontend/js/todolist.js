@@ -10,6 +10,10 @@
         span.className = "close";
         span.appendChild(txt);
         myNodelist[i].appendChild(span);
+        myNodelist[i].index = i;
+        myNodelist[i].onclick = function() {
+          deleteElement(this.index);
+        }
       }
     }
 
@@ -22,6 +26,21 @@
           div.style.display = "none";
         }
       }
+    }
+
+    //删除元素
+    function deleteElement(index) {
+      $.ajax({
+        type: "DELETE",
+        url: "http://localhost:3002/api/deleteTodo",
+        async: false,  //同步传输
+        data: {index: index}, //返回删除task的序号
+        dataType: "json",	
+        success: function(res){
+        },
+        error: function (res) {
+        }
+      });
     }
 
     /*点击li的时候，加上.checked，再点击则取消*/
@@ -50,8 +69,6 @@
             data: {task: inputValue}, /*传给后端的数据*/
             dataType: "json",	/*后端返回的数据格式json*/
             success: function(res){
-              // console.log(res)
-              // inputValue = data.data.message
             },
             error: function (res) {
             }
@@ -68,7 +85,6 @@
         type: "POST",
         url: "http://localhost:3002/api/getAll",
         async: false,  //同步传输
-        // data: {task: inputValue}, /*传给后端的数据*/
         dataType: "json",	/*后端返回的数据格式json*/
         success: function(res){
           todoList = res;

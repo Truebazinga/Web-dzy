@@ -25,7 +25,7 @@ app.post("/api/add", addTodo)
 
 app.post("/api/getAll", getAllTodo)
 
-app.delete("/api/delete", deleteTodo) 
+app.delete("/api/deleteTodo", deleteTodo) 
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
 
