@@ -65,21 +65,23 @@ exports.deleteTodo = async (req, res) => {
 exports.updateTodo = async (req, res) => {
   const index = req.body.index //index接收前端传输的数据
   const id = req.params.id  //id用于测试
+  const task = req.body.task
+  console.log(req.body)
   const file = await asyncReadFile(req.app.locals.dataFilePath)
   const todo_list = JSON.parse(file)
   const change = JSON.parse(await asyncReadFile("./change.json"))
   if(index){
-    todo_list[index].task = change[0].task
+    todo_list[index].task = task
   }else if(id){
     if(id < todo_list.length){
-      todo_list[id].task = change[0].task
+      todo_list[id].task = task
     }else{
       console.log("输入索引超出todoList长度")
     }
   }
-  if (index && todo_list[index].task != change[0].task) {
+  if (index && todo_list[index].task != task) {
     res.status(404).send()
-  } else if(id && todo_list[id].task != change[0].task){
+  } else if(id && todo_list[id].task != task){
     res.status(404).send()
   }else {
     await asyncWriteFile(JSON.stringify(todo_list), req.app.locals.dataFilePath)
