@@ -93,7 +93,7 @@ const {
 })
 }) 
 
-describe("post request", () => {
+describe("reset request", () => {
   afterEach(async function () {
     await asyncWriteFile(JSON.stringify([
       {"id":0,"task":"睡觉"},
