@@ -4,7 +4,9 @@ const {
   getAllTodo,
   deleteTodo,
   addTodo,
-  updateTodo
+  updateTodo,
+  deleteTodo2,
+  updateTodo2
 } = require('./controller')
 
 const app = express()
@@ -27,11 +29,11 @@ app.get("/api/getAll", getAllTodo)
 
 app.delete("/api/delete", deleteTodo) 
 
-app.delete("/api/delete/:id", deleteTodo) 
+app.delete("/api/delete/:id", deleteTodo2) 
 
 app.post("/api/update", updateTodo)
 
-app.post("/api/update/:id", updateTodo)
+app.post("/api/update/:id", updateTodo2)
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
 
