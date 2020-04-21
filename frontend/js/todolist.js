@@ -1,7 +1,6 @@
-import { updateTodo } from "../../backend/src/controller";
-
+// import { updateTodo } from "../../backend/src/controller";
 (function() {
-    var i; /*index*/
+    // var i; /*index*/
 
     /*为每个li后面加上关闭按钮*/
     function closeBtn(element) {
@@ -12,8 +11,10 @@ import { updateTodo } from "../../backend/src/controller";
       span.className = "close";
       span.appendChild(txt);
       span.onclick = function(){
-        deleteElement(this.index);
         var div = this.parentElement;
+        // console.log(div.getAttribute("index"));
+        deleteElement(div.getAttribute("index"));
+        
         div.style.display = "none";
       }
       element.appendChild(span);
@@ -24,16 +25,6 @@ import { updateTodo } from "../../backend/src/controller";
       // }
     }
 
-    /*点击关闭按钮，隐藏当前li*/
-    // function closeElement() {
-    //   var close = document.getElementsByClassName("close");
-    //   for (i = 0; i < close.length; i++) {
-    //     close[i].onclick = function() {
-    //       var div = this.parentElement; /*关闭按钮的父元素 - li*/
-    //       div.style.display = "none";
-    //     }
-    //   }
-    // }
 
     //删除元素
     function deleteElement(index) {
@@ -42,24 +33,28 @@ import { updateTodo } from "../../backend/src/controller";
         url: "http://localhost:3001/api/delete",
         async: false,  //同步传输
         data: {index: index}, //返回删除task的序号
-        dataType: "json",	
+        dataType: "json",
         success: function(res){
         },
         error: function (res) {
+          
         }
       });
     }
 
     function updateElement(index, new_name){
+      // console.log(index);
       $.ajax({
         type:"POST",
-        url:"http://localhost:3001/api/delete",
+        url:"http://localhost:3001/api/update",
         async:false,
         data:{id:index, task:new_name},
         dataType:"json",
         success:function(res){
+
         },
         error:function(res){
+          alert('已存在相同任务名');
         }
       });
     }
@@ -73,8 +68,9 @@ import { updateTodo } from "../../backend/src/controller";
             txt = prompt("请重新输入");
           }
           ev.target.innerHTML = txt;
-          updateElement(ev.target.index, txt);
+          updateElement(ev.target.getAttribute("index"), txt);
           closeBtn(ev.target);
+          // closeBtn(ev.target);
 
           // ev.target.classList.toggle('checked');
         }
@@ -83,12 +79,13 @@ import { updateTodo } from "../../backend/src/controller";
 
     /*点击添加时，创建一个新的ul*/
     function newElement() {
-
-      if (inputValue === '') {
+      var inputValue = document.getElementById("myInput").value;
+      if (inputValue == '') {
         alert("请先输入一个具体任务。");
-      } else {
+      }
+      else {
+        var flag;
         var li = document.createElement("li");
-        var inputValue = document.getElementById("myInput").value;
         var t = document.createTextNode(inputValue);
         li.appendChild(t);
         $.ajax({
@@ -98,34 +95,37 @@ import { updateTodo } from "../../backend/src/controller";
             data: {task: inputValue}, /*传给后端的数据*/
             dataType: "json",	/*后端返回的数据格式json*/
             success: function(res){
+              flag = true;
+              document.getElementById("myInput").value = "";
             },
             error: function (res) {
               alert("请输入不同的任务名");
-              document.getElementById("myInput").value = "";
-              return;
+              flag = false;
             }
         });
-        $.ajax({
-          type: "GET",
-          url: "http://localhost:3001/api/getAll",
-          async: false,  //同步传输
-          dataType: "json",	/*后端返回的数据格式json*/
-          success: function(res){
-            todoList = res;
-          },
-          error: function (res) {
+        if (flag ===true){
+          $.ajax({
+            type: "GET",
+            url: "http://localhost:3001/api/getAll",
+            async: false,  //同步传输
+            dataType: "json",	/*后端返回的数据格式json*/
+            success: function(res){
+              todoList = res;
+            },
+            error: function (res) {
+            }
+          });
+          for (var i=0;i<todoList.length;++i){
+            if (todoList[i].task === inputValue){
+              new_id = todoList[i].id;
+            }
           }
-        });
-        for (var i=0;i<todoList.length;++i){
-          if (todoList[i].task === inputValue){
-            new_id = todoList[i].id;
-          }
+          li.setAttribute("index", new_id);
+          closeBtn(li);
+          document.getElementById("myUL").appendChild(li);
         }
-        li.index = id;
-        closeBtn(li);
-        document.getElementById("myUL").appendChild(li);
       }
-      document.getElementById("myInput").value = ""; /*清空输入*/
+      // document.getElementById("myInput").value = ""; /*清空输入*/
     }
 
     //返回所有Todo任务
@@ -146,21 +146,15 @@ import { updateTodo } from "../../backend/src/controller";
         var li = document.createElement("li");
         var t = document.createTextNode(todoList[i].task);
         li.appendChild(t);
-        li.index = todoList[i].id;
+        li.setAttribute('index',todoList[i].id);
+        // li.index = todoList[i].id;
         closeBtn(li);
         document.getElementById("myUL").appendChild(li);
       }
       document.getElementById("myInput").value = ""; /*清空输入*/
     }
 
-    /*初始化list*/
-    function initList() {
-      closeBtn();
-      closeElement();
-      ifChecked();
-    }
 
-    /*初始化*/
     function init() {
       var inp = document.getElementsByTagName("input")[0];
       
