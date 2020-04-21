@@ -1,32 +1,39 @@
+import { updateTodo } from "../../backend/src/controller";
+
 (function() {
     var i; /*index*/
 
     /*为每个li后面加上关闭按钮*/
-    function closeBtn() {
-      var myNodelist = document.getElementsByTagName("li");
-      for (i = 0; i < myNodelist.length; i++) {
-        var span = document.createElement("span");
-        var txt = document.createTextNode("\u00D7"); /*unicode代码*/
-        span.className = "close";
-        span.appendChild(txt);
-        myNodelist[i].appendChild(span);
-        myNodelist[i].index = i;
-        myNodelist[i].onclick = function() {
-          deleteElement(this.index);
-        }
+    function closeBtn(element) {
+      // var myNodelist = document.getElementsByTagName("li");
+      // for (i = 0; i < myNodelist.length; i++) {
+      var span = document.createElement("span");
+      var txt = document.createTextNode("\u00D7"); /*unicode代码*/
+      span.className = "close";
+      span.appendChild(txt);
+      span.onclick = function(){
+        deleteElement(this.index);
+        var div = this.parentElement;
+        div.style.display = "none";
       }
+      element.appendChild(span);
+      // element.index = i;
+        // myNodelist[i].onclick = function() {
+        //   deleteElement(this.index);
+        // }
+      // }
     }
 
     /*点击关闭按钮，隐藏当前li*/
-    function closeElement() {
-      var close = document.getElementsByClassName("close");
-      for (i = 0; i < close.length; i++) {
-        close[i].onclick = function() {
-          var div = this.parentElement; /*关闭按钮的父元素 - li*/
-          div.style.display = "none";
-        }
-      }
-    }
+    // function closeElement() {
+    //   var close = document.getElementsByClassName("close");
+    //   for (i = 0; i < close.length; i++) {
+    //     close[i].onclick = function() {
+    //       var div = this.parentElement; /*关闭按钮的父元素 - li*/
+    //       div.style.display = "none";
+    //     }
+    //   }
+    // }
 
     //删除元素
     function deleteElement(index) {
@@ -43,25 +50,47 @@
       });
     }
 
+    function updateElement(index, new_name){
+      $.ajax({
+        type:"POST",
+        url:"http://localhost:3001/api/delete",
+        async:false,
+        data:{id:index, task:new_name},
+        dataType:"json",
+        success:function(res){
+        },
+        error:function(res){
+        }
+      });
+    }
     /*点击li的时候，加上.checked，再点击则取消*/
-    function ifChecked() {
+    function ifModify() {
       var list = document.querySelector('ul');
       list.onclick = function(ev) {
         if (ev.target.tagName === 'LI') {
-          ev.target.classList.toggle('checked');
+          var txt = prompt("请输入修改内容");
+          while (txt===""){
+            txt = prompt("请重新输入");
+          }
+          ev.target.innerHTML = txt;
+          updateElement(ev.target.index, txt);
+          closeBtn(ev.target);
+
+          // ev.target.classList.toggle('checked');
         }
       }
     }
 
     /*点击添加时，创建一个新的ul*/
     function newElement() {
-      var li = document.createElement("li");
-      var inputValue = document.getElementById("myInput").value;
-      var t = document.createTextNode(inputValue);
-      li.appendChild(t);
+
       if (inputValue === '') {
         alert("请先输入一个具体任务。");
       } else {
+        var li = document.createElement("li");
+        var inputValue = document.getElementById("myInput").value;
+        var t = document.createTextNode(inputValue);
+        li.appendChild(t);
         $.ajax({
             type: "POST",
             url: "http://localhost:3001/api/add",
@@ -71,8 +100,29 @@
             success: function(res){
             },
             error: function (res) {
+              alert("请输入不同的任务名");
+              document.getElementById("myInput").value = "";
+              return;
             }
         });
+        $.ajax({
+          type: "GET",
+          url: "http://localhost:3001/api/getAll",
+          async: false,  //同步传输
+          dataType: "json",	/*后端返回的数据格式json*/
+          success: function(res){
+            todoList = res;
+          },
+          error: function (res) {
+          }
+        });
+        for (var i=0;i<todoList.length;++i){
+          if (todoList[i].task === inputValue){
+            new_id = todoList[i].id;
+          }
+        }
+        li.index = id;
+        closeBtn(li);
         document.getElementById("myUL").appendChild(li);
       }
       document.getElementById("myInput").value = ""; /*清空输入*/
@@ -96,6 +146,8 @@
         var li = document.createElement("li");
         var t = document.createTextNode(todoList[i].task);
         li.appendChild(t);
+        li.index = todoList[i].id;
+        closeBtn(li);
         document.getElementById("myUL").appendChild(li);
       }
       document.getElementById("myInput").value = ""; /*清空输入*/
@@ -111,7 +163,7 @@
     /*初始化*/
     function init() {
       var inp = document.getElementsByTagName("input")[0];
-      console.log(typeof inp)
+      
       inp.onfocus = function(){
         // this.style.border = "1px solid red";
         this.placeholder = "";
@@ -123,22 +175,25 @@
         this.style.backgroundColor = "";
       }
       var addButton = document.getElementById("addButton");
-      getAllTask()
-      closeBtn();
-      closeElement();
-      ifChecked();
+      getAllTask();
+      // var myNodelist = document.getElementsByTagName("li");
+      // for (var i=0;i<myNodelist.length;++i){
+      //   closeBtn(myNodelist[i]);
+      // }
+      // closeElement();
+      ifModify();
 
       /*添加按钮点击时执行*/
       addButton.onclick = function() {
         newElement();
-        initList();
+        // initList();
       }
 
       /*按回车时亦执行*/
       document.onkeydown = function(event) {
         if(event.keyCode == 13) {
           newElement();
-          initList();
+          // initList();
         }
       }
     }
