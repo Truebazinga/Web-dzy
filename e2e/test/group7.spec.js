@@ -27,17 +27,10 @@ describe('add task', function () {
         await page.click('#addButton', {delay: 50});
         // 断言，看实际的结果和我预估的结果是否相同，如果相同，则通过测试
         let todoList = await page.waitFor('#myUL');
-        const expectInputContent = await page.evaluate(todoList => todoList.lastChild.querySelector('label').textContent, todoList);
+        const expectInputContent = await page.evaluate(todoList => todoList.lastChild.querySelector('#myUL #myUL:li').textContent, todoList);
         expect(expectInputContent).to.eql(newTaskContent);
     })
 });
-
-
-
-
-
-
-
 
 describe('update task', function () {
     let page;
@@ -50,28 +43,15 @@ describe('update task', function () {
     after (async function () {
         await page.close();
     });
-
-
-
-
-
-
-
-
-
-
-
+    
     it('should update task', async function() {
         const updatedContent = 'updated content';
-        await page.waitFor('.task-input');
-
-        await page.click('.task-items .task-item:last-child .edit-button');
-        const textareaElement=await page.$('.task-item:last-child textarea');
-        await textareaElement.click( {clickCount: 3})
-        await textareaElement.type(updatedContent);
-        await page.$eval('.task-item:last-child textarea', textarea => textarea.blur());
-
-        let theLastItem = await page.waitFor('.task-items .task-item:last-child');
+        await page.waitFor('#myUL');
+        await page.click('#myUL #myUL:li:last-child');
+        const textareaElement=await page.$('.updatetask');
+        await textareaElement.click('#submitchange')
+        await page.$eval('#myUL #myUL:li:last-child textarea', textarea => textarea.blur());
+        let theLastItem = await page.waitFor('#myUL #myUL:li:last-child');
         const expectInputContent = await page.evaluate(task => task.querySelector('textarea').textContent, theLastItem);
         expect(expectInputContent).to.eql(updatedContent);
     });
@@ -89,32 +69,12 @@ describe('delete task', function () {
         await page.close();
     });
 
-
     it('should delete the new task in the end of the list', async function() {
-        await page.waitFor('.task-input');
-        let originalItemsCount = await page.$$('.task-item').then(item => item.length);
-
-        await page.click('.task-items .task-item:last-child .delete-button');
+        await page.waitFor('#myUL');
+        let originalItemsCount = await page.$$('#myUL #myUL:li').then(item => item.length);
+        await page.click('#myUL #myUL:li:last-child .close');
         await page.waitFor(500);
-
-        let itemsCount = await page.$$('.task-item').then(item => item.length);
+        let itemsCount = await page.$$('#myUL #myUL:li').then(item => item.length);
         expect(originalItemsCount - itemsCount).to.eql(1);
     });
-
-
-
-
-
-
-
-
-    it('change todo list correct', async function() {
-        await page.click("li[class='not-done']", {delay: 500});
-
-        const number = await page.evaluate(() => {
-            return document.getElementsByTagName('li[class=\'not-done\']').length;
-        });
-        expect(number).to.eql(0);
-    })
-
 });
