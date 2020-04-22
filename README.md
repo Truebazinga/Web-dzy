@@ -26,3 +26,14 @@ Group 7
 
 `npm install`
 `npm run test`
+
+## 后端TDD测试
+`npm install`
+`npm test`
+
+## 后端启动
+`npm install`
+`npm start`
+
+## 前端启动
+`启动后端后点击 main.html`
